@@ -71,7 +71,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
 
 const JS_SNIPPET = `// argus.js — non-blocking fetch wrapper
 const ARGUS_API_KEY = "argus_live_YOUR_KEY_HERE";
-const ARGUS_ENDPOINT = "http://localhost:8100/api/events";
+const ARGUS_ENDPOINT = "http://20.109.155.247:8100/api/events";
 
 function getSessionId() {
   let id = sessionStorage.getItem("argus_sid");
@@ -130,7 +130,7 @@ import requests, uuid
 from datetime import datetime, timezone
 
 ARGUS_KEY = "argus_live_YOUR_KEY_HERE"
-ARGUS_URL = "http://localhost:8100/api/events"
+ARGUS_URL = "http://20.109.155.247:8100/api/events"
 
 def track_event(event_type: str, **kwargs):
     """Asynchronous-style fire-and-forget ingestion"""
@@ -158,7 +158,7 @@ const NODE_SNIPPET = `// Node.js backend integration
 const fetch = require("node-fetch");
 
 const ARGUS_KEY = "argus_live_YOUR_KEY_HERE";
-const ARGUS_URL = "http://localhost:8100/api/events";
+const ARGUS_URL = "http://20.109.155.247:8100/api/events";
 
 const track = (eventType, options = {}) => {
   fetch(ARGUS_URL, {
@@ -191,7 +191,7 @@ app.use((req, res, next) => {
   next();
 });`;
 
-const CURL_SNIPPET = `curl -s -X POST http://localhost:8100/api/events \\
+const CURL_SNIPPET = `curl -s -X POST http://20.109.155.247:8100/api/events \\
   -H "Content-Type: application/json" \\
   -H "X-API-Key: argus_live_YOUR_KEY_HERE" \\
   -d '{
