@@ -205,40 +205,51 @@ export default function ProjectsPage() {
           <div className="rounded-[14px] border border-white/[0.07] overflow-hidden">
             {projects.map((project, idx) => (
               <div key={project.id}>
-                <div className="p-4 md:px-5 flex items-center gap-4 flex-wrap">
-                  {/* Icon */}
-                  <div className="w-9 h-9 rounded-[9px] bg-white/[0.05] border border-white/[0.07] flex items-center justify-center shrink-0">
-                    <FolderOpen size={15} className="text-white/40" />
-                  </div>
-                  {/* Info */}
-                  <div className="w-40 shrink-0">
-                    <p className="font-semibold text-[0.9rem] text-white/85 mb-0.5">{project.name}</p>
-                    <div className="flex items-center gap-1.5 text-white/[0.22] text-[0.72rem] font-mono">
-                      <Calendar size={10} />
-                      {new Date(project.createdAt).toLocaleDateString()}
+                  <div className="p-4 md:px-5 flex flex-col lg:flex-row lg:items-center gap-3 sm:gap-4">
+                    {/* Top Row on Mobile: Icon + Info + Status */}
+                    <div className="flex items-center justify-between lg:w-48 shrink-0 w-full lg:w-auto">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="w-9 h-9 rounded-[9px] bg-white/[0.05] border border-white/[0.07] flex items-center justify-center shrink-0">
+                          <FolderOpen size={15} className="text-white/40" />
+                        </div>
+                        <div className="shrink-0">
+                          <p className="font-semibold text-[0.9rem] text-white/85 mb-0.5">{project.name}</p>
+                          <div className="flex items-center gap-1.5 text-white/[0.22] text-[0.72rem] font-mono">
+                            <Calendar size={10} />
+                            {new Date(project.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                      {/* Status dot (moved next to name on mobile) */}
+                      <div className="lg:hidden flex items-center gap-1.5 px-2.5 py-1 border border-white/[0.07] rounded-full">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-400/80" />
+                        <span className="font-mono text-[0.65rem] text-white/30 truncate">Active</span>
+                      </div>
+                    </div>
+
+                    {/* API Key (Takes remaining space) */}
+                    <div className="flex-1 flex items-center gap-2 min-w-0 w-full bg-white/[0.01] sm:bg-transparent p-2 sm:p-0 rounded-lg border border-white/[0.03] sm:border-none">
+                      <Key size={12} className="text-white/20 shrink-0 hidden sm:block" />
+                      <RevealKey apiKey={project.apiKey} />
+                    </div>
+
+                    {/* Actions & Status Desktop */}
+                    <div className="flex items-center gap-3 w-full lg:w-auto justify-end sm:justify-start lg:justify-end mt-1 lg:mt-0">
+                      <Link
+                        href={`/dashboard/projects/${project.id}`}
+                        className="flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 lg:px-3 py-2 lg:py-1.5 rounded-lg border border-white/10 bg-white/[0.04] text-white/80 no-underline text-[0.8rem] font-medium transition-all duration-200 hover:border-white/30 hover:bg-white/[0.08]"
+                      >
+                        View Dashboard <Activity size={13} />
+                      </Link>
+                      <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 border border-white/[0.07] rounded-full">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-400/80" />
+                        <span className="font-mono text-[0.65rem] text-white/30">Active</span>
+                      </div>
                     </div>
                   </div>
-                  {/* API Key */}
-                  <div className="flex-1 flex items-center gap-2 min-w-0">
-                    <Key size={12} className="text-white/20 shrink-0" />
-                    <RevealKey apiKey={project.apiKey} />
-                  </div>
-                  {/* Actions */}
-                  <Link
-                    href={`/dashboard/projects/${project.id}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] text-white/70 no-underline text-[0.8rem] font-medium transition-all duration-200 hover:border-white/30 hover:bg-white/[0.08]"
-                  >
-                    View <Activity size={13} />
-                  </Link>
-                  {/* Status dot */}
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 border border-white/[0.07] rounded-full">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-400/80" />
-                    <span className="font-mono text-[0.65rem] text-white/30">Active</span>
-                  </div>
-                </div>
-                {idx < projects.length - 1 && (
-                  <div className="h-px bg-white/[0.05]" />
-                )}
+                  {idx < projects.length - 1 && (
+                    <div className="h-px bg-white/[0.05]" />
+                  )}
               </div>
             ))}
           </div>

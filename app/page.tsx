@@ -287,20 +287,33 @@ export default function LandingPage() {
 
         {/* CTAs */}
         <div className="flex flex-wrap gap-3 justify-center mt-8 sm:mt-10 md:mt-12 px-4">
-          <Link
-            prefetch={false}
-            href="/auth"
-            className="px-4 sm:px-6 md:px-7 py-2 sm:py-2.5 md:py-3 bg-white text-black rounded-xl text-sm sm:text-base font-bold flex items-center gap-1.5 hover:opacity-85 hover:scale-102 transition-all duration-200 whitespace-nowrap"
-          >
-            Start Building <ChevronRight size={14} />
-          </Link>
-          <Link
-            prefetch={false}
-            href="/dashboard"
-            className="px-4 sm:px-6 md:px-7 py-2 sm:py-2.5 md:py-3 border border-white/14 text-white/75 rounded-xl text-sm sm:text-base font-medium flex items-center gap-1.5 hover:border-white/30 hover:text-white transition-all duration-200 whitespace-nowrap"
-          >
-            View Dashboard
-          </Link>
+          {user ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="px-4 sm:px-6 md:px-7 py-2 sm:py-2.5 md:py-3 bg-white text-black rounded-xl text-sm sm:text-base font-bold flex items-center gap-1.5 hover:opacity-85 hover:scale-102 transition-all duration-200 whitespace-nowrap"
+              >
+                Go to Dashboard <ChevronRight size={14} />
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                prefetch={false}
+                href="/auth"
+                className="px-4 sm:px-6 md:px-7 py-2 sm:py-2.5 md:py-3 bg-white text-black rounded-xl text-sm sm:text-base font-bold flex items-center gap-1.5 hover:opacity-85 hover:scale-102 transition-all duration-200 whitespace-nowrap"
+              >
+                Start Building <ChevronRight size={14} />
+              </Link>
+              <Link
+                prefetch={false}
+                href="/dashboard"
+                className="px-4 sm:px-6 md:px-7 py-2 sm:py-2.5 md:py-3 border border-white/14 text-white/75 rounded-xl text-sm sm:text-base font-medium flex items-center gap-1.5 hover:border-white/30 hover:text-white transition-all duration-200 whitespace-nowrap"
+              >
+                View Dashboard
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Scroll indicator */}
@@ -389,12 +402,21 @@ export default function LandingPage() {
         <p className="text-sm sm:text-base text-white/40 max-w-[min(420px,100%)] mx-auto mb-6 sm:mb-8 md:mb-9 leading-relaxed px-4">
           Create a project, get your API key, and start streaming events in under a minute.
         </p>
-        <Link
-          href="/auth"
-          className="inline-flex items-center gap-1.5 px-5 sm:px-6 md:px-7 py-2.5 sm:py-3 bg-white text-black rounded-xl text-sm sm:text-base font-bold hover:opacity-85 transition-opacity duration-200"
-        >
-          Get Started <ChevronRight size={14} />
-        </Link>
+        {user ? (
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 px-5 sm:px-6 md:px-7 py-2.5 sm:py-3 bg-white text-black rounded-xl text-sm sm:text-base font-bold hover:opacity-85 transition-opacity duration-200"
+          >
+            Go to Dashboard <ChevronRight size={14} />
+          </Link>
+        ) : (
+          <Link
+            href="/auth"
+            className="inline-flex items-center gap-1.5 px-5 sm:px-6 md:px-7 py-2.5 sm:py-3 bg-white text-black rounded-xl text-sm sm:text-base font-bold hover:opacity-85 transition-opacity duration-200"
+          >
+            Get Started <ChevronRight size={14} />
+          </Link>
+        )}
       </section>
 
       {/* ===== FOOTER ===== */}

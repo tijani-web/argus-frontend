@@ -187,7 +187,7 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
       </div>
 
       {/* Main Dashboard Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_320px] gap-6 mb-6">
         {/* Chart Section */}
         <div className="flex flex-col gap-6">
           <div className="p-6 bg-white/[0.02] border border-border-subtle rounded-2xl">
