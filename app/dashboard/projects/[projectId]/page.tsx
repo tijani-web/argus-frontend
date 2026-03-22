@@ -196,8 +196,10 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
               <p className="text-xs text-white/30">Aggregated event counts over the last 100 buckets</p>
             </div>
             {seriesLoading ? <ChartSkeleton /> : (
-              <div className="h-[300px]">
-                <Line ref={chartRef} data={chartData} options={chartOptions} />
+              <div className="w-full overflow-x-auto pb-4 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20">
+                <div style={{ height: "300px", minWidth: "100%", width: series && series.length > 40 ? `${series.length * 28}px` : "100%" }}>
+                  <Line ref={chartRef} data={chartData} options={chartOptions} />
+                </div>
               </div>
             )}
           </div>
