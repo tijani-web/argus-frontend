@@ -55,34 +55,41 @@ export function StreamVisualizer() {
     <>
       <style>{`
         @keyframes sv-drift {
-          0%   { transform: translateX(-12vw); opacity: 0; }
+          0%   { transform: translateX(-15vw); opacity: 0; }
           4%   { opacity: 1; }
           88%  { opacity: 1; }
-          100% { transform: translateX(112vw); opacity: 0; }
+          100% { transform: translateX(115vw); opacity: 0; }
         }
         .sv-wrap {
           position: absolute;
           inset: 0;
           overflow: hidden;
           pointer-events: none;
+          mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
         .sv-particle {
           position: absolute;
           left: 0;
           font-family: 'JetBrains Mono', monospace;
-          font-size: 0.68rem;
+          font-size: clamp(0.55rem, 1.2vw, 0.72rem);
           white-space: nowrap;
-          padding: 7px 14px;
-          border-radius: 7px;
-          border: 1px solid rgba(255,255,255,0.05);
-          background: rgba(5,5,10,0.65);
-          backdrop-filter: blur(6px);
+          padding: 6px 12px;
+          border-radius: 8px;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(10,10,14,0.7);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          box-shadow: 0 4px 24px -6px rgba(0, 209, 255, 0.08);
           line-height: 1.5;
-          letter-spacing: 0.01em;
+          letter-spacing: 0.02em;
         }
-        .sv-key  { color: rgba(150,195,220,0.75); }
-        .sv-str  { color: rgba(190,190,200,0.6); }
-        .sv-num  { color: rgba(120,210,155,0.8); }
+        @media (min-width: 640px) {
+           .sv-particle { padding: 8px 16px; border-radius: 10px; }
+        }
+        .sv-key  { color: rgba(150,195,220,0.85); font-weight: 500; }
+        .sv-str  { color: rgba(190,190,200,0.7); }
+        .sv-num  { color: rgba(120,210,155,0.9); font-weight: 500; }
       `}</style>
       <div className="sv-wrap">
         {particles.map((p) => (

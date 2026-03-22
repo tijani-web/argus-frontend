@@ -21,9 +21,8 @@ function CodeBlock({ code, lang = "" }: { code: string; lang?: string }) {
           <span>{lang.toUpperCase()}</span>
           <button
             onClick={copy}
-            className={`bg-transparent border-none cursor-pointer flex items-center gap-1.5 text-[0.65rem] font-mono tracking-wider transition-colors duration-200 ${
-              copied ? "text-green-400/90" : "text-white/30 hover:text-white/60"
-            }`}
+            className={`bg-transparent border-none cursor-pointer flex items-center gap-1.5 text-[0.65rem] font-mono tracking-wider transition-colors duration-200 ${copied ? "text-green-400/90" : "text-white/30 hover:text-white/60"
+              }`}
           >
             {copied ? <CheckCheck size={12} /> : <Copy size={12} />}
             {copied ? "COPIED" : "COPY"}
@@ -98,8 +97,8 @@ export async function track(eventType, extra = {}) {
         timestamp: new Date().toISOString(),
         sessionId: getSessionId(),
         url: window.location.pathname,
-        service: "web-frontend",
-        ...extra,
+        service: "web-frontend", // YOUR SERVICE NAME
+        data: extra, // Safely nests custom properties
       }),
     });
   } catch (e) {
@@ -110,11 +109,11 @@ export async function track(eventType, extra = {}) {
 const JS_USAGE = `import { track } from "./argus.js";
 
 // 1. Tracks initial page load
-track("page_view", { data: { title: document.title } });
+track("page_view", { title: document.title, theme: "dark" });
 
 // 2. Track specific user interactions
 document.getElementById("signup-btn").addEventListener("click", () => {
-  track("signup_click", { device: "desktop" });
+  track("signup_click", { device: "desktop", plan: "pro" });
 });
 
 // 3. Track performance metrics
@@ -126,33 +125,34 @@ window.addEventListener("load", () => {
 });`;
 
 const PYTHON_SNIPPET = `# Standard requests library integration
-import requests, uuid
+import requests, uuid, os
 from datetime import datetime, timezone
 
 ARGUS_KEY = "argus_live_YOUR_KEY_HERE"
 ARGUS_URL = "http://20.109.155.247:8100/api/events"
 
-def track_event(event_type: str, **kwargs):
+def track_event(event_type: str, service_name="python-backend", **kwargs):
     """Asynchronous-style fire-and-forget ingestion"""
     payload = {
         "eventId": str(uuid.uuid4()),
         "eventType": event_type,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "sessionId": "backend-worker",
-        **kwargs,
+        "service": service_name,
+        "data": kwargs, # Safely nests all custom **kwargs here
     }
     try:
         requests.post(
             ARGUS_URL,
             headers={"X-API-Key": ARGUS_KEY, "Content-Type": "application/json"},
             json=payload,
-            timeout=1, # Keep timeouts short for telemetry
+            timeout=1, # Keep timeouts short to avoid blocking workers
         )
     except requests.exceptions.RequestException:
         pass
 
 # Example: Track a successful database operation
-track_event("db_write", statusCode=201, latency=12, service="order-api")`;
+track_event("api_call", statusCode=201, latency=12, endpoint="/v1/users")`;
 
 const NODE_SNIPPET = `// Node.js backend integration
 const fetch = require("node-fetch");
@@ -160,7 +160,7 @@ const fetch = require("node-fetch");
 const ARGUS_KEY = "argus_live_YOUR_KEY_HERE";
 const ARGUS_URL = "http://20.109.155.247:8100/api/events";
 
-const track = (eventType, options = {}) => {
+const track = (eventType, options = {}, serviceName = "node-api") => {
   fetch(ARGUS_URL, {
     method: "POST",
     headers: { 
@@ -172,7 +172,8 @@ const track = (eventType, options = {}) => {
       eventType,
       timestamp: new Date().toISOString(),
       sessionId: "server-runtime",
-      ...options,
+      service: serviceName,
+      data: options, // Safely nests custom options here
     }),
   }).catch(() => {});
 };
@@ -181,12 +182,11 @@ const track = (eventType, options = {}) => {
 app.use((req, res, next) => {
   const start = Date.now();
   res.on("finish", () => {
-    track("api_lifecycle", {
+    track("api_call", {
       url: req.path,
       statusCode: res.statusCode,
-      latency: Date.now() - start,
-      service: "inventory-svc"
-    });
+      latency: Date.now() - start
+    }, "inventory-svc");
   });
   next();
 });`;
@@ -196,12 +196,16 @@ const CURL_SNIPPET = `curl -s -X POST http://20.109.155.247:8100/api/events \\
   -H "X-API-Key: argus_live_YOUR_KEY_HERE" \\
   -d '{
     "eventId": "550e8400-e29b-41d4-a716-446655440000",
-    "eventType": "heartbeat",
+    "eventType": "api_call",
     "timestamp": "2026-03-16T12:00:00Z",
     "sessionId": "test-session",
     "service": "cli-test",
     "statusCode": 200,
-    "latency": 5
+    "latency": 5,
+    "data": {
+      "cli_version": "1.0.4",
+      "os": "linux"
+    }
   }'
 # Expected Output: 202 Accepted`;
 
@@ -222,7 +226,7 @@ export default function DocsPage() {
   return (
     <div className="min-h-screen bg-black text-white scroll-smooth">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-[100] h-[70px] flex items-center justify-between px-4 md:px-10 bg-black/80 backdrop-blur-xl border-b border-white/[0.08]">
+      <nav className="fixed top-0 left-0 right-0 z-[100] h-[70px] flex items-center justify-between px-4 md:px-10 bg-black/80 backdrop-blur-xl border-b border-zinc-800/80">
         <Link href="/" className="flex items-center gap-2.5 no-underline">
           <div className="w-[30px] h-[30px] rounded-lg bg-white flex items-center justify-center font-black text-black">A</div>
           <span className="font-mono font-bold text-[0.9rem] text-white tracking-wider">ARGUS docs</span>
@@ -278,11 +282,10 @@ export default function DocsPage() {
                 key={s.id}
                 href={`#${s.id}`}
                 onClick={() => { setActiveTab(s.id); setSidebarOpen(false); }}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-[10px] no-underline text-[0.88rem] font-medium transition-all duration-200 ${
-                  activeTab === s.id
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-[10px] no-underline text-[0.88rem] font-medium transition-all duration-200 ${activeTab === s.id
                     ? "text-white bg-white/[0.06]"
                     : "text-white/40 hover:text-white/70 hover:bg-white/[0.03]"
-                }`}
+                  }`}
               >
                 <s.icon size={16} strokeWidth={activeTab === s.id ? 2.5 : 2} />
                 {s.title}
@@ -339,7 +342,7 @@ export default function DocsPage() {
               <Step n={3} title="Ingest & Verify">
                 <p className="text-[0.9rem] text-white/40 leading-[1.7] mb-3">
                   Execute a test event using the curl snippet below. Once you receive the
-                  <code className="font-mono bg-white/[0.06] px-1.5 rounded">202 Accepted</code>
+                  <code className="font-mono bg-white/[0.06] px-1.5 rounded mx-1.5">202 Accepted</code>
                   response, visit your project-specific dashboard to see the data point in the
                   <strong> Event Inspector</strong> (real-time audit log).
                 </p>

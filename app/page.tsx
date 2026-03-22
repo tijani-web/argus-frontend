@@ -88,7 +88,7 @@ export default function LandingPage() {
       {/* ===== NAVBAR ===== */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-350 ease ${scrollY > 30
-            ? "bg-black/88 backdrop-blur-xl border-b border-white/6"
+            ? "bg-black/88 backdrop-blur-xl border-b border-zinc-800/80"
             : "bg-transparent border-b border-transparent"
           }`}
       >
@@ -174,7 +174,7 @@ export default function LandingPage() {
 
         {/* Mobile Menu */}
         <div
-          className={`md:hidden absolute top-[60px] left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-white/10 transition-all duration-300 ease overflow-hidden ${mobileMenuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+          className={`md:hidden absolute top-[60px] left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-zinc-800/80 transition-all duration-300 ease overflow-hidden ${mobileMenuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
             }`}
         >
           <div className="flex flex-col py-4 px-4 gap-3">
@@ -348,9 +348,9 @@ export default function LandingPage() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="p-4 sm:p-5 md:p-6 rounded-xl border border-white/7 bg-white/2 hover:border-white/14 hover:bg-white/4 transition-all duration-250 cursor-default"
+              className="p-4 sm:p-5 md:p-6 rounded-xl border border-zinc-800/80 bg-white/2 hover:border-zinc-700 hover:bg-white/4 transition-all duration-250 cursor-default"
             >
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-white/6 border border-white/10 flex items-center justify-center mb-3 sm:mb-4 md:mb-5">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-white/6 border border-zinc-800 flex items-center justify-center mb-3 sm:mb-4 md:mb-5">
                 <feature.icon size={15} className="text-white/75" />
               </div>
               <h3 className="text-sm sm:text-base font-semibold mb-1.5 sm:mb-2 text-white/90">

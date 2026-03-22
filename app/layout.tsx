@@ -6,7 +6,20 @@ export const metadata: Metadata = {
   title: "ARGUS — Real-Time Event Analytics",
   description:
     "Observe the Invisible. Real-Time. A reactive event analytics and observability platform powered by Spring WebFlux, Kafka, and TimescaleDB.",
-  keywords: ["event analytics", "observability", "real-time", "kafka", "timescaledb"],
+  keywords: ["event analytics", "observability", "real-time", "kafka", "timescaledb", "telemetry", "streaming"],
+  openGraph: {
+    title: "ARGUS — Real-Time Event Analytics",
+    description: "Observe the Invisible. Real-Time. A reactive event analytics platform.",
+    url: "https://argus.dev",
+    siteName: "ARGUS",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ARGUS — Real-Time Event Analytics",
+    description: "Observe the Invisible in Real-Time.",
+  },
 };
 
 export default function RootLayout({
