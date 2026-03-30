@@ -154,10 +154,10 @@ export async function getLiveCounters(userId: string, projectId?: string): Promi
   return res.json();
 }
 
-export async function getHistoricalSeries(userId: string, projectId?: string, eventType?: string): Promise<SeriesBucket[]> {
+export async function getHistoricalSeries(userId: string, projectId?: string, eventType?: string, limit: number = 500): Promise<SeriesBucket[]> {
   let url = projectId
-    ? `${BASE}/api/v1/dashboard/series?userId=${userId}&projectId=${projectId}`
-    : `${BASE}/api/v1/dashboard/series?userId=${userId}`;
+    ? `${BASE}/api/v1/dashboard/series?userId=${userId}&projectId=${projectId}&limit=${limit}`
+    : `${BASE}/api/v1/dashboard/series?userId=${userId}&limit=${limit}`;
   
   if (eventType) url += `&eventType=${eventType}`;
 

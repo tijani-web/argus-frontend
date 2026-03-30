@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useRef, useState } from "react";
+import { use, useRef, useState, useEffect } from "react";
 import useSWR from "swr";
 import {
   Chart as ChartJS,
@@ -38,6 +38,7 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
   const { user } = useAuth();
   const [selectedType, setSelectedType] = useState<string>("");
   const [selectedCountry, setSelectedCountry] = useState<string>("");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data: projects } = useSWR(
     user?.userId ? `projects-${user.userId}` : null,
@@ -63,6 +64,13 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
     () => getHistoricalSeries(user!.userId, projectId, selectedType),
     { refreshInterval: 10000 }
   );
+
+  // Auto-scroll to the latest data (far right) when series loads
+  useEffect(() => {
+    if (scrollRef.current && series && series.length > 0) {
+      scrollRef.current.scrollLeft = scrollRef.current.scrollWidth;
+    }
+  }, [series]);
 
   const {
     data: rawEvents,
@@ -244,10 +252,13 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
           <div className="p-6 bg-white/[0.02] border border-border-subtle rounded-2xl">
             <div className="mb-5">
               <h3 className="text-[0.95rem] font-bold text-white mb-1">Historical Activity</h3>
-              <p className="text-xs text-white/30">Aggregated event counts over the last 100 buckets</p>
+              <p className="text-xs text-white/30">Aggregated event counts (Last 500 buckets)</p>
             </div>
             {seriesLoading ? <ChartSkeleton /> : (
-              <div className="w-full overflow-x-auto pb-4 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20">
+              <div 
+                ref={scrollRef}
+                className="w-full overflow-x-auto pb-4 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20 scroll-smooth"
+              >
                 <div style={{ height: "300px", minWidth: "100%", width: series && series.length > 40 ? `${series.length * 28}px` : "100%" }}>
                   <Line ref={chartRef} data={chartData} options={chartOptions} />
                 </div>

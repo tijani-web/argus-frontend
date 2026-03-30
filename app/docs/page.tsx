@@ -29,7 +29,7 @@ function CodeBlock({ code, lang = "" }: { code: string; lang?: string }) {
           </button>
         </div>
       )}
-      <pre className="m-0 p-5 overflow-x-auto font-mono text-[0.82rem] leading-[1.7] text-white/75 whitespace-pre">
+      <pre className="m-0 p-5 overflow-x-auto font-mono text-[0.78rem] md:text-[0.82rem] leading-[1.7] text-white/75 whitespace-pre scrollbar-hide">
         {code}
       </pre>
     </div>
@@ -38,7 +38,7 @@ function CodeBlock({ code, lang = "" }: { code: string; lang?: string }) {
 
 function Section({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
   return (
-    <section className="mb-[72px]">
+    <section className="mb-12 md:mb-[72px]">
       <p className="font-mono text-[0.65rem] text-white/25 tracking-[0.12em] uppercase mb-2.5">
         {sub}
       </p>
@@ -52,9 +52,9 @@ function Section({ title, sub, children }: { title: string; sub?: string; childr
 
 function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
-    <div className="flex gap-5 mb-10">
+    <div className="flex gap-4 md:gap-5 mb-8 md:mb-10">
       <div className="shrink-0">
-        <div className="w-8 h-8 rounded-full border border-white/[0.12] flex items-center justify-center font-mono text-[0.78rem] font-bold text-white/50">
+        <div className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-white/[0.12] flex items-center justify-center font-mono text-[0.7rem] md:text-[0.78rem] font-bold text-white/50">
           {n}
         </div>
       </div>
@@ -70,7 +70,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
 
 const JS_SNIPPET = `// argus.js — non-blocking fetch wrapper
 const ARGUS_API_KEY = "argus_live_YOUR_KEY_HERE";
-const ARGUS_ENDPOINT = "http://20.109.155.247:8100/api/events";
+const ARGUS_ENDPOINT = "https://argus-bt.duckdns.org:8443/api/events";
 
 function getSessionId() {
   let id = sessionStorage.getItem("argus_sid");
@@ -129,7 +129,7 @@ import requests, uuid, os
 from datetime import datetime, timezone
 
 ARGUS_KEY = "argus_live_YOUR_KEY_HERE"
-ARGUS_URL = "http://20.109.155.247:8100/api/events"
+ARGUS_URL = "https://argus-bt.duckdns.org:8443/api/events"
 
 def track_event(event_type: str, service_name="python-backend", **kwargs):
     """Asynchronous-style fire-and-forget ingestion"""
@@ -158,7 +158,7 @@ const NODE_SNIPPET = `// Node.js backend integration
 const fetch = require("node-fetch");
 
 const ARGUS_KEY = "argus_live_YOUR_KEY_HERE";
-const ARGUS_URL = "http://20.109.155.247:8100/api/events";
+const ARGUS_URL = "https://argus-bt.duckdns.org:8443/api/events";
 
 const track = (eventType, options = {}, serviceName = "node-api") => {
   fetch(ARGUS_URL, {
@@ -191,7 +191,7 @@ app.use((req, res, next) => {
   next();
 });`;
 
-const CURL_SNIPPET = `curl -s -X POST http://20.109.155.247:8100/api/events \\
+const CURL_SNIPPET = `curl -s -X POST https://argus-bt.duckdns.org:8443/api/events \\
   -H "Content-Type: application/json" \\
   -H "X-API-Key: argus_live_YOUR_KEY_HERE" \\
   -d '{
@@ -301,7 +301,7 @@ export default function DocsPage() {
             <p className="font-mono text-[0.65rem] text-white/25 tracking-[0.12em] uppercase mb-3.5">
               Documentation
             </p>
-            <h1 className="text-[clamp(2rem,4vw,3rem)] font-black tracking-tighter text-white leading-[1.1] mb-5">
+            <h1 className="text-[clamp(1.8rem,5vw,3rem)] font-black tracking-tighter text-white leading-[1.1] mb-5">
               Integrate in minutes,
               <br />
               <span className="text-white/30">not hours.</span>
@@ -355,7 +355,7 @@ export default function DocsPage() {
           <div id="schema">
             <Section title="Event Schema" sub="API Reference">
               <p className="text-[0.9rem] text-white/40 leading-[1.7] mb-5">
-                All events are sent to <code className="font-mono bg-white/[0.06] px-2 rounded text-[0.85rem]">POST /api/v1/events</code> with header <code className="font-mono bg-white/[0.06] px-2 rounded text-[0.85rem]">X-API-Key</code>.
+                All events are sent to <code className="font-mono bg-white/[0.06] px-2 rounded text-[0.85rem]">POST /api/events</code> with header <code className="font-mono bg-white/[0.06] px-2 rounded text-[0.85rem]">X-API-Key</code>.
               </p>
 
               <div className="overflow-x-auto mb-6">
