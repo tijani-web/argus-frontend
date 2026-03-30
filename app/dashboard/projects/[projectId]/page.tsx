@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useRef } from "react";
+import { use, useRef, useState } from "react";
 import useSWR from "swr";
 import {
   Chart as ChartJS,
@@ -13,9 +13,9 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { getLiveCounters, getHistoricalSeries, getRawEvents, getProjects } from "@/lib/api";
+import { getLiveCounters, getHistoricalSeries, getRawEvents, getProjects, getCountries } from "@/lib/api";
 import { StatSkeleton, ChartSkeleton } from "@/components/ui/SkeletonLoader";
-import { AlertTriangle, Activity, Terminal, ArrowLeft } from "lucide-react";
+import { AlertTriangle, Activity, Terminal, ArrowLeft, Filter, Globe } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { EventLog } from "@/components/dashboard/EventLog";
 import { StatCard } from "@/components/dashboard/StatCard";
@@ -36,6 +36,8 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
   const { projectId } = use(params);
   const chartRef = useRef<ChartJS<"line"> | null>(null);
   const { user } = useAuth();
+  const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
 
   const { data: projects } = useSWR(
     user?.userId ? `projects-${user.userId}` : null,
@@ -48,18 +50,17 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
     error: countersError,
     isLoading: countersLoading,
   } = useSWR(
-    projectId ? `counters-${projectId}` : null,
-    () => getLiveCounters(projectId),
+    user?.userId && projectId ? `counters-${projectId}` : null,
+    () => getLiveCounters(user!.userId, projectId),
     { refreshInterval: 3000 }
   );
 
   const {
     data: series,
-    error: seriesError,
     isLoading: seriesLoading,
   } = useSWR(
-    projectId ? `series-${projectId}` : null,
-    () => getHistoricalSeries(projectId),
+    user?.userId && projectId ? `series-${projectId}-${selectedType}` : null,
+    () => getHistoricalSeries(user!.userId, projectId, selectedType),
     { refreshInterval: 10000 }
   );
 
@@ -67,9 +68,18 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
     data: rawEvents,
     isLoading: eventsLoading
   } = useSWR(
-    projectId ? `raw-events-${projectId}` : null,
-    () => getRawEvents(projectId),
+    user?.userId && projectId ? `raw-events-${projectId}-${selectedType}-${selectedCountry}` : null,
+    () => getRawEvents(user!.userId, projectId, 50, selectedType, selectedCountry),
     { refreshInterval: 3000 }
+  );
+
+  const {
+    data: countriesData,
+    isLoading: countriesLoading
+  } = useSWR(
+    user?.userId && projectId ? `countries-${projectId}` : null,
+    () => getCountries(user!.userId, projectId),
+    { refreshInterval: 30000 }
   );
 
   const chartLabels =
@@ -186,6 +196,47 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
         )}
       </div>
 
+      {/* Filter Bar */}
+      <div className="flex items-center gap-4 mb-6 p-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl flex-wrap">
+        <div className="flex items-center gap-2 text-white/40 mr-2">
+          <Filter size={14} />
+          <span className="text-[0.75rem] font-bold uppercase tracking-wider">Filters</span>
+        </div>
+        
+        <div className="flex gap-2 items-center flex-wrap">
+          <select 
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+            className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-[0.8rem] text-white/70 outline-none focus:border-accent-green/50 transition-colors cursor-pointer"
+          >
+            <option value="">All Event Types</option>
+            {counters?.eventsByType && Object.keys(counters.eventsByType).map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+
+          <select 
+            value={selectedCountry}
+            onChange={(e) => setSelectedCountry(e.target.value)}
+            className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-[0.8rem] text-white/70 outline-none focus:border-accent-green/50 transition-colors cursor-pointer"
+          >
+            <option value="">All Countries</option>
+            {countriesData?.map(c => (
+              <option key={c.country} value={c.country}>{c.country}</option>
+            ))}
+          </select>
+
+          {(selectedType || selectedCountry) && (
+            <button 
+              onClick={() => { setSelectedType(""); setSelectedCountry(""); }}
+              className="text-[0.75rem] text-accent-green/60 hover:text-accent-green underline underline-offset-4 ml-2 transition-colors"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Main Dashboard Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_320px] gap-6 mb-6">
         {/* Chart Section */}
@@ -222,6 +273,32 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
 
         {/* Sidebar */}
         <div className="flex flex-col gap-6">
+          <div className="p-6 bg-white/[0.02] border border-border-subtle rounded-2xl">
+            <div className="flex items-center gap-2 mb-5">
+              <Globe size={14} className="text-white/30" />
+              <h3 className="text-[0.9rem] font-bold text-white mb-0">Top Countries</h3>
+            </div>
+            {countriesLoading ? (
+              <div className="flex flex-col gap-4">
+                {[0, 1, 2].map(i => <div key={i} className="h-6 w-full skeleton rounded-md" />)}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3.5">
+                {countriesData && countriesData.length > 0 ? countriesData.map((c, i) => (
+                  <div key={c.country} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[0.7rem] font-mono text-white/20 w-4">{i + 1}.</span>
+                      <span className="text-[0.82rem] text-white/70">{c.country}</span>
+                    </div>
+                    <span className="text-[0.78rem] font-mono font-bold text-accent-green">{c.count}</span>
+                  </div>
+                )) : (
+                  <p className="text-[0.78rem] text-white/20 italic">No geographic data yet.</p>
+                )}
+              </div>
+            )}
+          </div>
+
           <div className="p-6 bg-white/[0.02] border border-border-subtle rounded-2xl">
             <h3 className="text-[0.9rem] font-bold text-white mb-5">Event Type Breakdown</h3>
             {countersLoading ? <div className="h-[200px] skeleton" /> : <EventTypeBar typeMap={counters?.eventsByType ?? {}} />}

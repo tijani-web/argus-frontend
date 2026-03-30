@@ -154,10 +154,13 @@ export async function getLiveCounters(userId: string, projectId?: string): Promi
   return res.json();
 }
 
-export async function getHistoricalSeries(userId: string, projectId?: string): Promise<SeriesBucket[]> {
-  const url = projectId
+export async function getHistoricalSeries(userId: string, projectId?: string, eventType?: string): Promise<SeriesBucket[]> {
+  let url = projectId
     ? `${BASE}/api/v1/dashboard/series?userId=${userId}&projectId=${projectId}`
     : `${BASE}/api/v1/dashboard/series?userId=${userId}`;
+  
+  if (eventType) url += `&eventType=${eventType}`;
+
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch series: ${res.status}`);
   return res.json();
@@ -169,11 +172,24 @@ export interface RawEvent {
   payload: any;
 }
 
-export async function getRawEvents(userId: string, projectId?: string, limit: number = 50): Promise<RawEvent[]> {
-  const url = projectId
+export async function getRawEvents(userId: string, projectId?: string, limit: number = 50, eventType?: string, country?: string): Promise<RawEvent[]> {
+  let url = projectId
     ? `${BASE}/api/v1/dashboard/events?userId=${userId}&projectId=${projectId}&limit=${limit}`
     : `${BASE}/api/v1/dashboard/events?userId=${userId}&limit=${limit}`;
+  
+  if (eventType) url += `&eventType=${eventType}`;
+  if (country) url += `&country=${country}`;
+
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch raw events: ${res.status}`);
+  return res.json();
+}
+
+export async function getCountries(userId: string, projectId?: string): Promise<{ country: string; count: number }[]> {
+  const url = projectId
+    ? `${BASE}/api/v1/dashboard/countries?userId=${userId}&projectId=${projectId}`
+    : `${BASE}/api/v1/dashboard/countries?userId=${userId}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch countries: ${res.status}`);
   return res.json();
 }
