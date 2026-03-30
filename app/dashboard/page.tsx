@@ -82,8 +82,8 @@ export default function DashboardOverviewPage() {
     error: countersError,
     isLoading: countersLoading,
   } = useSWR(
-    "global-counters",
-    () => getLiveCounters(),
+    userId ? `global-counters-${userId}` : null,
+    () => getLiveCounters(userId),
     { refreshInterval: 3000 }
   );
 
@@ -92,8 +92,8 @@ export default function DashboardOverviewPage() {
     error: seriesError,
     isLoading: seriesLoading,
   } = useSWR(
-    "global-series",
-    () => getHistoricalSeries(),
+    userId ? `global-series-${userId}` : null,
+    () => getHistoricalSeries(userId),
     { refreshInterval: 30000 }
   );
 

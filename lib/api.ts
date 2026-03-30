@@ -145,15 +145,19 @@ export async function createProject(
   return mapProject(raw);
 }
 
-export async function getLiveCounters(projectId: string): Promise<LiveCounters> {
-  const url = `${BASE}/api/v1/dashboard/counters?projectId=${projectId}`;
+export async function getLiveCounters(userId: string, projectId?: string): Promise<LiveCounters> {
+  const url = projectId 
+    ? `${BASE}/api/v1/dashboard/counters?userId=${userId}&projectId=${projectId}`
+    : `${BASE}/api/v1/dashboard/counters?userId=${userId}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch counters: ${res.status}`);
   return res.json();
 }
 
-export async function getHistoricalSeries(projectId: string): Promise<SeriesBucket[]> {
-  const url = `${BASE}/api/v1/dashboard/series?projectId=${projectId}`;
+export async function getHistoricalSeries(userId: string, projectId?: string): Promise<SeriesBucket[]> {
+  const url = projectId
+    ? `${BASE}/api/v1/dashboard/series?userId=${userId}&projectId=${projectId}`
+    : `${BASE}/api/v1/dashboard/series?userId=${userId}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch series: ${res.status}`);
   return res.json();
@@ -165,8 +169,10 @@ export interface RawEvent {
   payload: any;
 }
 
-export async function getRawEvents(projectId: string, limit: number = 50): Promise<RawEvent[]> {
-  const url = `${BASE}/api/v1/dashboard/events?projectId=${projectId}&limit=${limit}`;
+export async function getRawEvents(userId: string, projectId?: string, limit: number = 50): Promise<RawEvent[]> {
+  const url = projectId
+    ? `${BASE}/api/v1/dashboard/events?userId=${userId}&projectId=${projectId}&limit=${limit}`
+    : `${BASE}/api/v1/dashboard/events?userId=${userId}&limit=${limit}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch raw events: ${res.status}`);
   return res.json();

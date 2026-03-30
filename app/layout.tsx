@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "ARGUS — Real-Time Event Analytics",
     description: "Observe the Invisible. Real-Time. A reactive event analytics platform.",
-    url: "https://argus.dev",
+    url: "https://argus-frontend-eight.vercel.app/",
     siteName: "ARGUS",
     locale: "en_US",
     type: "website",
