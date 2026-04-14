@@ -248,7 +248,7 @@ export default function ProjectDashboardPage({ params }: { params: Promise<{ pro
       {/* Main Dashboard Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_320px] gap-6 mb-6">
         {/* Chart Section */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 min-w-0">
           <div className="p-6 bg-white/[0.02] border border-border-subtle rounded-2xl">
             <div className="mb-5">
               <h3 className="text-[0.95rem] font-bold text-white mb-1">Historical Activity</h3>

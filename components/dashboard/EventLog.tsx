@@ -4,6 +4,21 @@ import { useState } from "react";
 import { RawEvent } from "@/lib/api";
 import { ChevronDown, ChevronRight, Clock } from "lucide-react";
 
+function formatEventTime(dateStr: string) {
+  const date = new Date(dateStr);
+  const now = new Date();
+  
+  const isToday = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  const isYesterday = date.getDate() === yesterday.getDate() && date.getMonth() === yesterday.getMonth() && date.getFullYear() === yesterday.getFullYear();
+  
+  const timeStr = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+  if (isToday) return `Today at ${timeStr}`;
+  if (isYesterday) return `Yesterday at ${timeStr}`;
+  return `${date.toLocaleDateString([], { month: 'short', day: 'numeric' })} at ${timeStr}`;
+}
+
 export function EventLog({ events, isLoading }: { events: RawEvent[]; isLoading: boolean }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -53,9 +68,9 @@ export function EventLog({ events, isLoading }: { events: RawEvent[]; isLoading:
               </span>
 
               <span className="flex items-center gap-1.5 font-mono text-[0.7rem] text-white/25">
-                <Clock size={11} />
-                {new Date(event.time).toLocaleTimeString()}
-              </span>
+                 <Clock size={11} />
+                 {formatEventTime(event.time)}
+               </span>
 
               <div className="flex-1" />
 
