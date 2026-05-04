@@ -70,7 +70,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
 
 const JS_SNIPPET = `// argus.js — non-blocking fetch wrapper
 const ARGUS_API_KEY = "argus_live_YOUR_KEY_HERE";
-const ARGUS_ENDPOINT = "https://argus-bt.duckdns.org:8443/api/events";
+const ARGUS_ENDPOINT = "https://tijani-argus-api.fly.dev/api/events";
 
 function getSessionId() {
   let id = sessionStorage.getItem("argus_sid");
@@ -129,7 +129,7 @@ import requests, uuid, os
 from datetime import datetime, timezone
 
 ARGUS_KEY = "argus_live_YOUR_KEY_HERE"
-ARGUS_URL = "https://argus-bt.duckdns.org:8443/api/events"
+ARGUS_URL = "https://tijani-argus-api.fly.dev/api/events"
 
 def track_event(event_type: str, service_name="python-backend", **kwargs):
     """Asynchronous-style fire-and-forget ingestion"""
@@ -158,7 +158,7 @@ const NODE_SNIPPET = `// Node.js backend integration
 const fetch = require("node-fetch");
 
 const ARGUS_KEY = "argus_live_YOUR_KEY_HERE";
-const ARGUS_URL = "https://argus-bt.duckdns.org:8443/api/events";
+const ARGUS_URL = "https://tijani-argus-api.fly.dev/api/events";
 
 const track = (eventType, options = {}, serviceName = "node-api") => {
   fetch(ARGUS_URL, {
@@ -191,7 +191,7 @@ app.use((req, res, next) => {
   next();
 });`;
 
-const CURL_SNIPPET = `curl -s -X POST https://argus-bt.duckdns.org:8443/api/events \\
+const CURL_SNIPPET = `curl -s -X POST https://tijani-argus-api.fly.dev/api/events \\
   -H "Content-Type: application/json" \\
   -H "X-API-Key: argus_live_YOUR_KEY_HERE" \\
   -d '{
